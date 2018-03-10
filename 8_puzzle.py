@@ -3,7 +3,7 @@ import heapq
 import math
 
 class Node:
-    def __init__(self, state, parent, action, cost_f=None, cost_g = None):
+    def __init__(self, state, parent, action, cost_f =None, cost_g = None):
         self.state = state
         if parent == False:
             self.parent = False
@@ -12,6 +12,7 @@ class Node:
             self.parent = parent
             self.action = action
         self.cost_g = 0
+        self.cost_f = 0
     
     def print_puzzle(self):
         string = ''
@@ -60,13 +61,33 @@ def addNewNode(newNode, frontier, explored, searchType):
         frontier.append(newNode)
         return
     else:
+        found = 0
+        del_node = newNode
+        for x in explored:
+            if newNode.state == x.state:
+                found = 2
+                break
+        for x,_ in frontier:
+            if newNode.state == x.state:
+                found = 1
+                del_node = x
+                break
+
         curr_x = newNode.state.index('0') % 3
         curr_y = newNode.state.index('0') // 3
         if searchType == 'am':
-            newNode.cost = abs(curr_x) + abs(curr_y)
+            newNode.cost_g = newNode.parent.cost_g + 1
+            h = abs(curr_x) + abs(curr_y)
+            newNode.cost_f = newNode.cost_g + h
         elif searchType == 'ae':
-            newNode.cost = math.sqrt(pow((curr_x),2) + pow((curr_y),2))
+            newNode.cost_g = newNode.parent.cost_g + 1
+            h = math.sqrt(pow((curr_x),2) + pow((curr_y),2))
+            newNode.cost_f = newNode.cost_g + h
         
+        if found == 1:
+            frontier.remove((del_node,del_node.cost_f))
+        frontier.append((newNode,newNode.cost_f))
+        frontier.sort(key=lambda tup: tup[1])
 
 def getPathToGoal(node):
     path = []
@@ -93,6 +114,7 @@ def bfs(init_state, goal):
     while len(frontier)!=0:
         curr_node = frontier.pop(0)
         explored.append(curr_node)
+        # curr_node.print_puzzle()
 
         if curr_node.state == goal:
             return Success(curr_node)
@@ -122,12 +144,14 @@ def dfs(init_state, goal):
 def a_star(init_state, goal, searchType):
     frontier = []
     init_node = Node(init_state, False, '')
-    heapq.heappush(frontier, init_node)
+    frontier.append((init_node, 0))
+    #heapq.heappush(frontier, init_node)
     explored = []
     
     while len(frontier)!=0:
-        curr_node = heapq.heappop()
+        curr_node,_ = frontier.pop(0)
         explored.append(curr_node)
+        curr_node.print_puzzle()
 
         if curr_node.state == goal:
             return Success(curr_node)
