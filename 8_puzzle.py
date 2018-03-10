@@ -1,6 +1,12 @@
 import sys
 import heapq
 import math
+import colorama
+import time
+
+colorama.init()
+def put_cursor(x,y):
+    print ("\x1b[{};{}H".format(y+1,x+1))
 
 class Node:
     def __init__(self, state, parent, action, cost_f =None, cost_g = None):
@@ -23,7 +29,10 @@ class Node:
                 string = string + '| {} '.format(' ' if tile == '0' else tile)
             string = string + '|\n'
             string = string + '+---+---+---+\n'
+        put_cursor(0,0)
         print('{0}\r'.format(string))
+        time.sleep(0.5) 
+        
 
 # swap the zero index and the decided next move index
 def swap(state, z, new):
@@ -105,7 +114,7 @@ def Success(node):
     goal_path = getPathToGoal(node)
     for x in goal_path:
         x.print_puzzle()
-    return "successfully solved the problem"
+    return "Successfully solved the problem\n"
     
 # bfs algorithm
 def bfs(init_state, goal):
@@ -163,7 +172,6 @@ def a_star(init_state, goal, searchType):
         expand_nodes(curr_node, frontier, explored, searchType)
     
     return "There is no any way to solve this shitty problem dude."
-
 
 if len(sys.argv)>1:
     myboard = sys.argv[1]
