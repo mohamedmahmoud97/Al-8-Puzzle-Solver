@@ -23,8 +23,9 @@ class Node:
                 string = string + '| {} '.format(' ' if tile == '0' else tile)
             string = string + '|\n'
             string = string + '+---+---+---+\n'
-        print(string)
+        print('{0}\r'.format(string))
 
+# swap the zero index and the decided next move index
 def swap(state, z, new):
     newState = state[:]
     newState[z] = state[new]
@@ -37,19 +38,20 @@ def expand_nodes(node, frontier, explored, searchType):
     z = node.state.index('0')
     
     #check Up,Down,Left,Right neighbor nodes
-    #bfs
+    #for bfs, A*(manhattan and euclidean)
     if searchType == 'bfs' or searchType == 'ae' or searchType == 'am':
         if z-3 >= 0: addNewNode(Node(swap(b, z, z-3), node, 'Up'), frontier, explored,searchType)
         if z+3 <= 8: addNewNode(Node(swap(b, z, z+3), node, 'Down'), frontier, explored,searchType)
         if z%3-1 >= 0: addNewNode(Node(swap(b, z, z-1), node, 'Left'), frontier, explored,searchType)
         if z%3+1 < 3: addNewNode(Node(swap(b, z, z+1), node, 'Right'), frontier, explored,searchType)
-    #dfs
+    # dfs
     elif searchType == 'dfs':
         if z%3+1 < 3: addNewNode(Node(swap(b, z, z+1), node, 'Right'), frontier, explored,searchType)
         if z%3-1 >= 0: addNewNode(Node(swap(b, z, z-1), node, 'Left'), frontier, explored,searchType)
         if z+3 <= 8: addNewNode(Node(swap(b, z, z+3), node, 'Down'), frontier, explored,searchType)
         if z-3 >= 0: addNewNode(Node(swap(b, z, z-3), node, 'Up'), frontier, explored,searchType)
 
+#add the new node and check if it was in the frontier or the explored lists or not
 def addNewNode(newNode, frontier, explored, searchType):
     if searchType == 'bfs' or searchType == 'dfs':
         for x in frontier:
@@ -89,6 +91,7 @@ def addNewNode(newNode, frontier, explored, searchType):
         frontier.append((newNode,newNode.cost_f))
         frontier.sort(key=lambda tup: tup[1])
 
+# get the whole path of the goal
 def getPathToGoal(node):
     path = []
     while node.parent:
@@ -97,13 +100,13 @@ def getPathToGoal(node):
     path.reverse()
     return path
 
+# the success function to print every step of the path to goal
 def Success(node):
     goal_path = getPathToGoal(node)
     for x in goal_path:
         x.print_puzzle()
     return "successfully solved the problem"
     
-
 # bfs algorithm
 def bfs(init_state, goal):
     frontier = []
@@ -141,6 +144,7 @@ def dfs(init_state, goal):
     
     return "There is no any way to solve this shitty problem dude."
 
+# A* algorithm 
 def a_star(init_state, goal, searchType):
     frontier = []
     init_node = Node(init_state, False, '')
@@ -151,7 +155,7 @@ def a_star(init_state, goal, searchType):
     while len(frontier)!=0:
         curr_node,_ = frontier.pop(0)
         explored.append(curr_node)
-        curr_node.print_puzzle()
+        # curr_node.print_puzzle()
 
         if curr_node.state == goal:
             return Success(curr_node)
@@ -159,6 +163,7 @@ def a_star(init_state, goal, searchType):
         expand_nodes(curr_node, frontier, explored, searchType)
     
     return "There is no any way to solve this shitty problem dude."
+
 
 if len(sys.argv)>1:
     myboard = sys.argv[1]
