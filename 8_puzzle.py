@@ -21,7 +21,7 @@ class Node:
         self.cost_f = 0
     
     def print_puzzle(self):
-        string = ''
+        string = '\n Solving the puzzle:\n\n'
         string = string + '+---+---+---+\n'
         for i in range(3):
             for j in range(3):
