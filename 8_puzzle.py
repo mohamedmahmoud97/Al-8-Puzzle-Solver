@@ -184,10 +184,13 @@ goal = '0,1,2,3,4,5,6,7,8'
 goal = goal.split(',')
 init = myboard.split(',')
 result = ""
+
+start_time = time.time()
 if searchType == "bfs":
     result = bfs(init, goal)
 elif searchType == "dfs":
     result = dfs(init, goal)
 elif searchType == "am" or searchType == "ae":
     result = a_star(init, goal, searchType)
-print(result)
+runtime = time.time() - start_time
+print(result + "in only --- %s seconds ---\n" % runtime)
