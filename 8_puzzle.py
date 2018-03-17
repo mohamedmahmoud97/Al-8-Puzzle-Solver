@@ -29,7 +29,7 @@ class Node:
                 string = string + '| {} '.format(' ' if tile == '0' else tile)
             string = string + '|\n'
             string = string + '+---+---+---+\n'
-        put_cursor(0,0)
+        #put_cursor(0,0)
         print('{0}\r'.format(string))
         time.sleep(0.5) 
         
@@ -145,6 +145,7 @@ def dfs(init_state, goal):
     while len(frontier)!=0:
         curr_node = frontier.pop()
         explored.append(curr_node)
+        # curr_node.print_puzzle()
 
         if curr_node.state == goal:
             return Success(curr_node)
