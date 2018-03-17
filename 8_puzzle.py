@@ -29,7 +29,7 @@ class Node:
                 string = string + '| {} '.format(' ' if tile == '0' else tile)
             string = string + '|\n'
             string = string + '+---+---+---+\n'
-        #put_cursor(0,0)
+        put_cursor(0,0)
         print('{0}\r'.format(string))
         time.sleep(0.5) 
         
