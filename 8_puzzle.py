@@ -31,7 +31,7 @@ class Node:
             string = string + '+---+---+---+\n'
         put_cursor(0,0)
         print('{0}\r'.format(string))
-        time.sleep(0.5) 
+        time.sleep(.5) 
         
 
 # swap the zero index and the decided next move index
@@ -103,21 +103,24 @@ def addNewNode(newNode, frontier, explored, searchType):
 # get the whole path of the goal
 def getPathToGoal(node):
     path = []
+    depth = 0
     while node.parent:
+        depth+=1
         path.append(node)
         node = node.parent
     path.reverse()
-    return path
+    return path,depth
 
 # the success function to print every step of the path to goal
 def Success(node):
-    goal_path = getPathToGoal(node)
+    goal_path,depth = getPathToGoal(node)
     for x in goal_path:
         x.print_puzzle()
-    return "Successfully solved the problem\n"
+    return "Successfully solved the problem and the height is " + str(depth) + "\n"
     
 # bfs algorithm
 def bfs(init_state, goal):
+    start_time = time.time()
     frontier = []
     init_node = Node(init_state, False, '')
     frontier.append(init_node)
@@ -126,17 +129,21 @@ def bfs(init_state, goal):
     while len(frontier)!=0:
         curr_node = frontier.pop(0)
         explored.append(curr_node)
-        # curr_node.print_puzzle()
+        curr_node.print_puzzle()
 
         if curr_node.state == goal:
-            return Success(curr_node)
-        
+            runtime = time.time() - start_time
+            result = Success(curr_node)
+            print(result + "in only --- %s seconds ---\n" % runtime)
+            return 
+
         expand_nodes(curr_node, frontier, explored, 'bfs')
     
     return "There is no any way to solve this shitty problem dude."
 
 # dfs algorithm
 def dfs(init_state, goal):
+    start_time = time.time()
     frontier = []
     init_node = Node(init_state, False, '')
     frontier.append(init_node)
@@ -148,7 +155,10 @@ def dfs(init_state, goal):
         # curr_node.print_puzzle()
 
         if curr_node.state == goal:
-            return Success(curr_node)
+            runtime = time.time() - start_time
+            result = Success(curr_node)
+            print(result + "in only --- %s seconds ---\n" % runtime)
+            return 
         
         expand_nodes(curr_node, frontier, explored, 'dfs')
     
@@ -156,6 +166,7 @@ def dfs(init_state, goal):
 
 # A* algorithm 
 def a_star(init_state, goal, searchType):
+    start_time = time.time()
     frontier = []
     init_node = Node(init_state, False, '')
     frontier.append((init_node, 0))
@@ -168,7 +179,10 @@ def a_star(init_state, goal, searchType):
         # curr_node.print_puzzle()
 
         if curr_node.state == goal:
-            return Success(curr_node)
+            runtime = time.time() - start_time
+            result = Success(curr_node)
+            print(result + "in only --- %s seconds ---\n" % runtime)
+            return 
 
         expand_nodes(curr_node, frontier, explored, searchType)
     
@@ -188,10 +202,8 @@ result = ""
 
 start_time = time.time()
 if searchType == "bfs":
-    result = bfs(init, goal)
+    bfs(init, goal)
 elif searchType == "dfs":
-    result = dfs(init, goal)
+    dfs(init, goal)
 elif searchType == "am" or searchType == "ae":
-    result = a_star(init, goal, searchType)
-runtime = time.time() - start_time
-print(result + "in only --- %s seconds ---\n" % runtime)
+    a_star(init, goal, searchType)
