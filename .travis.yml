@@ -2,3 +2,9 @@ language: python
 
 os:
   - linux
+
+before_install:
+  - python3 --version
+
+install:
+  - sudo apt-get install python3.6
