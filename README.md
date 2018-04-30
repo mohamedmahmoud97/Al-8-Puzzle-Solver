@@ -1,4 +1,6 @@
 # AI-8-Puzzle-Solver
+[![License](https://img.shields.io/dub/l/vibe-d.svg)](https://github.com/mohamedmahmoud97/Zuper-UDP/blob/v2/LICENSE)
+
 An 8 puzzle game solver using BFS, DFS, and A* search algorithms and there are two versions of the A* algorithm. One using the Manhattan Distance and the other is using the Euclidean Distance. 
 
 ## Run in terminal
